@@ -20,12 +20,14 @@ Use this skill to improve the skill library as a controlled engineering loop, no
 
 ## Lifecycle
 
-1. **Audit the registry.** Run `python /home/workdir/.grok/skills/skill-evolution/scripts/audit_skills.py` or inspect `/home/workdir/.grok/skills/*/SKILL.md` and `/root/.grok/skills/*/SKILL.md`. Check names, descriptions, duplicate coverage, references, line counts, and validator results.
+`<skills-dir>` means your skills folder, e.g. `~/.claude/skills` (Claude Code) or `~/.openclaw/state/skills` (OpenClaw). The bundled scripts read it from `$SKILLS_DIR`.
+
+1. **Audit the registry.** Run `python <skills-dir>/skill-evolution/scripts/audit_skills.py` or inspect `<skills-dir>/*/SKILL.md`. Check names, descriptions, duplicate coverage, references, line counts, and validator results.
 2. **Define the gap.** State the repeated task, the current failure or missing capability, the intended trigger, non-goals, and one or more observable acceptance tests.
 3. **Choose the smallest intervention.** Prefer, in order: use an existing skill; add a reference or script to an existing skill; compose existing skills; create a new skill only when the gap is distinct and reusable.
-4. **Develop.** For a new skill, use skill-creator init or create `/home/workdir/.grok/skills/<hyphen-case-name>/` with a valid `SKILL.md`. Write frontmatter with `name` and a trigger-focused `description`. Add only necessary `scripts/`, `references/`, and `templates/` resources; remove unused examples.
+4. **Develop.** For a new skill, use skill-creator init or create `<skills-dir>/<hyphen-case-name>/` with a valid `SKILL.md`. Write frontmatter with `name` and a trigger-focused `description`. Add only necessary `scripts/`, `references/`, and `templates/` resources; remove unused examples.
 5. **Test.** Validate frontmatter and structure. Execute every bundled script with a safe representative input. Check that references resolve, instructions do not contradict higher-priority constraints, and the acceptance test would detect a regression.
-6. **Install or update.** Copy the completed package into `/home/workdir/.grok/skills/<name>/` only after tests pass. For an existing skill, make a backup and revalidate the final directory. Do not silently alter unrelated skills.
+6. **Install or update.** Copy the completed package into `<skills-dir>/<name>/` only after tests pass. For an existing skill, make a backup and revalidate the final directory. Do not silently alter unrelated skills.
 7. **Evaluate in use.** After a real task, compare the result with the acceptance test. If it fails, identify the smallest missing instruction or resource, change one thing, retest, and keep the improvement only if it helps.
 8. **Report.** Return the skills audited or changed, validation results, tests run, limitations, and any follow-up gap. Distinguish installed changes from proposals.
 

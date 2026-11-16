@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shlex
 import subprocess
 from pathlib import Path
 
-DEFAULT_SKILL_DIRS = (
-    Path('/home/workdir/.grok/skills'),
-    Path('/root/.grok/skills'),
+DEFAULT_SKILL_DIRS = tuple(
+    Path(p).expanduser()
+    for p in os.environ.get('SKILLS_DIRS', '~/.claude/skills:.claude/skills').split(os.pathsep)
+    if p
 )
 
 
