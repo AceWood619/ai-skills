@@ -9,13 +9,15 @@ Run the full capability-engineering loop below. Use autonomy for reversible loca
 
 ## Cycle
 
-1. **Read the authorities.** Read `/root/.grok/skills/skill-creator/SKILL.md` and `/home/workdir/.grok/skills/skill-evolution/SKILL.md` before modifying the registry.
-2. **Baseline.** Run `python /home/workdir/.grok/skills/skill-evolution/scripts/audit_skills.py --json`. Record the skill count, invalid packages, duplicates, warnings, and relevant existing coverage.
+`<skills-dir>` means your skills folder, e.g. `~/.claude/skills` (Claude Code) or `~/.openclaw/state/skills` (OpenClaw). The bundled scripts read it from `$SKILLS_DIR`.
+
+1. **Read the authorities.** Read the installed `skill-creator` skill (if present) and `skill-evolution/SKILL.md` before modifying the registry.
+2. **Baseline.** Run `python <skills-dir>/skill-evolution/scripts/audit_skills.py --json`. Record the skill count, invalid packages, duplicates, warnings, and relevant existing coverage.
 3. **Discover the gap.** Search skill metadata and references for the requested capability. Prefer an existing skill, a small additive reference/script, or composition before creating a package. Create a new skill only when the gap is distinct, reusable, and has an observable acceptance test.
 4. **Specify.** Write a short acceptance record — gap, trigger, skip cases, non-goals, safety boundary, expected resources, and tests. Choose a hyphen-case name that does not collide with the registry.
-5. **Develop.** Use skill-creator init scripts or create `/home/workdir/.grok/skills/<name>/` with a valid `SKILL.md`. Replace placeholders with a concise body; add only necessary scripts, references, or templates; remove unused examples. Keep the body below 500 lines and link references directly.
+5. **Develop.** Use skill-creator init scripts or create `<skills-dir>/<name>/` with a valid `SKILL.md`. Replace placeholders with a concise body; add only necessary scripts, references, or templates; remove unused examples. Keep the body below 500 lines and link references directly.
 6. **Test the candidate.** Validate frontmatter and structure, compile and execute every bundled script with safe representative inputs, verify referenced files, and test at least one negative path when the skill performs validation or mutation.
-7. **Install safely.** Copy only a passing package into `/home/workdir/.grok/skills/<name>/`. Never overwrite an unrelated skill. If improving an existing skill, preserve a backup and revalidate the final directory.
+7. **Install safely.** Copy only a passing package into `<skills-dir>/<name>/`. Never overwrite an unrelated skill. If improving an existing skill, preserve a backup and revalidate the final directory.
 8. **Smoke-test end to end.** Re-run the full registry audit, execute targeted workflow-contract checks, and confirm no invalid packages or duplicate names. Treat a failed check as a defect — make one focused change, then rerun the affected and full checks.
 9. **Report evidence.** State the gap, files changed, tests and exact results, installed status, limitations, warnings, and the next signal that would justify another iteration.
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -18,12 +19,15 @@ def run(command: list[str]) -> tuple[int, str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('candidate', type=Path, help='candidate skill directory')
-    parser.add_argument('--skills', type=Path, default=Path('/home/workdir/.grok/skills'))
+    parser.add_argument('--skills', type=Path, default=Path(os.environ.get('SKILLS_DIR', '~/.claude/skills')).expanduser(),
+                        help='skills folder (default: $SKILLS_DIR or ~/.claude/skills)')
     args = parser.parse_args()
     failures: list[str] = []
     skill_md = args.candidate / 'SKILL.md'
-    validator = Path('/root/.grok/skills/skill-creator/scripts/quick_validate.py')
-    audit_script = Path('/home/workdir/.grok/skills/skill-evolution/scripts/audit_skills.py')
+    # Optional official validator from the skill-creator skill; skipped when SKILL_VALIDATOR is unset.
+    validator = Path(os.environ.get('SKILL_VALIDATOR', '/nonexistent'))
+    # The audit script ships in the sibling skill-evolution skill.
+    audit_script = Path(__file__).resolve().parents[2] / 'skill-evolution' / 'scripts' / 'audit_skills.py'
     if not skill_md.is_file():
         failures.append('candidate is missing SKILL.md')
     else:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 import subprocess
@@ -70,8 +71,10 @@ def audit(path: Path, validator: Path | None) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--skills", type=Path, default=Path("/home/workdir/.grok/skills"))
-    parser.add_argument("--validator", type=Path, default=Path("/root/.grok/skills/skill-creator/scripts/quick_validate.py"))
+    parser.add_argument("--skills", type=Path, default=Path(os.environ.get("SKILLS_DIR", "~/.claude/skills")).expanduser(),
+                        help="skills folder (default: $SKILLS_DIR or ~/.claude/skills)")
+    parser.add_argument("--validator", type=Path, default=Path(os.environ["SKILL_VALIDATOR"]) if os.environ.get("SKILL_VALIDATOR") else None,
+                        help="optional skill-creator quick_validate.py (default: $SKILL_VALIDATOR; skipped if unset)")
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     args = parser.parse_args()
 
